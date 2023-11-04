@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.23/esri/themes/dark/main.css">
+    <style type="text/css">
+        * {
+            user-select: auto !important;
+            -webkit-user-select: auto !important;
+        }
+    </style>
+    <input type="hidden" id="inject_idm_text_selection">
+</head>
+
+<body>
+    <div id="viewDiv" class="esri-view esri-view-width-xsmall esri-view-width-less-than-small esri-view-width-less-than-medium esri-view-width-less-than-large esri-view-width-less-than-xlarge esri-view-height-small esri-view-height-greater-than-xsmall esri-view-height-less-than-medium esri-view-height-less-than-large esri-view-height-less-than-xlarge esri-view-orientation-portrait">
+        <div class="esri-view-root">
+            <div class="esri-view-surface esri-view-surface--inset-outline esri-view-surface--touch-none" role="application" tabindex="0" data-interacting="false"><canvas style="width: 100%; height:100%; display:block;" width="360" height="612"></canvas></div>
+            <div class="esri-overlay-surface">
+                <div style="visibility: hidden;"></div>
+            </div>
+            <div class="esri-ui calcite-theme-dark" style="inset: 0px;">
+                <div class="esri-ui-inner-container esri-ui-corner-container" style="inset: 15px 15px 30px;">
+                    <div class="esri-ui-top-left esri-ui-corner">
+                        <div class="esri-component esri-zoom esri-widget">
+                            <div class="esri-widget--button esri-widget esri-interactive" role="button" tabindex="0" title="Zoom in"><span aria-hidden="true" role="presentation" class="esri-icon esri-icon-plus"></span><span class="esri-icon-font-fallback-text">Zoom in</span></div>
+                            <div class="esri-widget--button esri-widget esri-interactive" role="button" tabindex="0" title="Zoom out"><span aria-hidden="true" role="presentation" class="esri-icon esri-icon-minus"></span><span class="esri-icon-font-fallback-text">Zoom out</span></div>
+                        </div>
+                        <div class="esri-component esri-navigation-toggle esri-widget" tabindex="0" aria-label="Toggle to pan or rotate in 3D" title="Toggle to pan or rotate in 3D">
+                            <div class="esri-navigation-toggle_button esri-widget--button esri-navigation-togglebutton--pan esri-navigation-toggle_button--active"><span class="esri-icon-pan"></span></div>
+                            <div class="esri-navigation-toggle_button esri-widget--button esri-navigation-toggle_button--rotate"><span class="esri-icon-rotate"></span></div>
+                        </div>
+                        <div class="esri-component esri-compass esri-widget--button esri-widget esri-interactive" role="button" tabindex="0" aria-label="Reset map orientation" title="Reset map orientation"><span aria-hidden="true" class="esri-compass__icon esri-icon-compass" style="transform: rotateZ(-7.53218deg);"></span><span class="esri-icon-font-fallback-text">Reset map orientation</span></div>
+                    </div>
+                    <div class="esri-ui-top-right esri-ui-corner"></div>
+                    <div class="esri-ui-bottom-left esri-ui-corner"></div>
+                    <div class="esri-ui-bottom-right esri-ui-corner"></div>
+                </div>
+                <div class="esri-ui-inner-container esri-ui-manual-container">
+                    <div class="esri-component esri-attribution esri-widget">
+                        <div class="esri-attribution__sources esri-interactive" tabindex="0" role="button">Earthstar Geographics | Source: Airbus,USGS,NGA,NASA,CGIAR,NLS,OS,NMA,Geodatastyrelsen,GSA,GSI and the GIS User Community</div>
+                        <div class="esri-attribution_powered-by">Powered by <a class="esri-attribution_link" href="http://www.esri.com/" target="_blank" rel="noreferrer">Esri</a></div>
+                    </div>
+                    <div class="esri-component" style="display: none;"></div>
+                    <div class="esri-component" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="esri-view-user-storage"></div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/SceneView.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/layers/GraphicsLayer.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/3d/layers/GraphicsLayerView3D.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/layers/TileLayer.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/layers/ElevationLayer.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/3d/layers/graphics/GraphicsProcessor.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/layers/mixins/ArcGISCachedService.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/3d/layers/TileLayerView3D.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/layers/TileLayerView.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/support/drapedUtils.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/renderers/support/clickToleranceUtils.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/layers/support/ElevationQuery.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/views/3d/webgl-engine/lib/SmaaRenderPassData.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.23/esri/layers/support/ElevationTile.js"></script>
+    <script src="https://js.arcgis.com/4.23/"></script>
+    <script src="https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/satellite.js"></script>
+
+    <script type="text/javascript">
+        function machineLearningRandomActivation() {
+            // For demonstration purposes, the actual ML function is not used as I am a college student and don't want to pay for a GPU cluster to run this project on. Instead you can have a random number generator that simulates the actual linear regression used. Email me for inquiries regarding the prediction model
+            return Math.random();
+        }
+        // Satellite js function
+        function getSatelliteLocation(date, line1, line2) {
+            /******************
+             * satellite-js is a library that includes a set of
+             * functions to convert TLE to geographic locations
+             * We use this to get the geographic location of the
+             * satellites for the current date. For more details
+             * on satellite-js visib the github repo
+             * https://github.com/shashwatak/satellite-js
+             ******************/
+            const satrec = satellite.twoline2satrec(line1, line2);
+            const position_and_velocity = satellite.propagate(
+                satrec,
+                date.getUTCFullYear(),
+                date.getUTCMonth() + 1,
+                date.getUTCDate(),
+                date.getUTCHours(),
+                date.getUTCMinutes(),
+                date.getUTCSeconds()
+            );
+            const position_eci = position_and_velocity.position;
+
+            const gmst = satellite.gstime_from_date(
+                date.getUTCFullYear(),
+                date.getUTCMonth() + 1,
+                date.getUTCDate(),
+                date.getUTCHours(),
+                date.getUTCMinutes(),
+                date.getUTCSeconds()
+            );
+
+            const position_gd = satellite.eci_to_geodetic(position_eci, gmst);
+
+            let longitude = position_gd.longitude;
+            let latitude = position_gd.latitude;
+            let height = position_gd.height;
+            if (isNaN(longitude) || isNaN(latitude) || isNaN(height)) {
+                return null;
+            }
+            const rad2deg = 180 / Math.PI;
+            while (longitude < -Math.PI) {
+                longitude += 2 * Math.PI;
+            }
+            while (longitude > Math.PI) {
+                longitude -= 2 * Math.PI;
+            }
+            return {
+                type: "point", // Autocasts as new Point()
+                x: rad2deg * longitude,
+                y: rad2deg * latitude,
+                z: height * 1000
+            };
+        }
+
+        // Add Modules
+        require([
+            "esri/config",
+            "esri/Map",
+            "esri/views/SceneView",
+            "esri/layers/GraphicsLayer",
+            "esri/Graphic",
+            "esri/geometry/Point"
+        ], (esriConfig, Map, SceneView, GraphicsLayer, Graphic, Point) => {
+
+            // Create map
+            const map = new Map({
+                basemap: "satellite",
+                ground: "world-elevation"
+            });
+
+            // Create view
+            const view = new SceneView({
+                container: "viewDiv",
+                map: map,
+                constraints: {
+                    altitude: {
+                        max: 1000000000 // meters
+                    }
+                },
+                popup: {
+                    dockEnabled: true,
+                    dockOptions: {
+                        breakpoint: false
+                    }
+                },
+                environment: {
+                    lighting: {
+                        type: "virtual"
+                    },
+                    starsEnabled: false,
+                }
+            });
+
+            view.popup.watch("selectedFeature", () => {
+                satelliteTracks.removeAll();
+            });
+
+            view.popup.on("trigger-action", (event) => {
+                if (event.action.id === "track") {
+                    satelliteTracks.removeAll();
+
+                    let graphic = view.popup.selectedFeature;
+                    let trackFeatures = [];
+
+                    for (let i = 0; i < 60 * 3; i++) {
+                        let loc = null;
+                        try {
+                            loc = getSatelliteLocation(
+                                new Date(Date.now() + i * 1000 * 60),
+                                graphic.attributes.line1,
+                                graphic.attributes.line2
+                            );
+                        } catch (error) {}
+
+                        if (loc !== null) {
+                            trackFeatures.push([loc.x, loc.y, loc.z]);
+                        }
+                    }
+
+                    let track = new Graphic({
+                        geometry: {
+                            type: "polyline", // autocasts as new Polyline()
+                            paths: [trackFeatures]
+                        },
+                        symbol: {
+                            type: "line-3d", // autocasts as new LineSymbol3D()
+                            symbolLayers: [{
+                                type: "line", // autocasts as new LineSymbol3DLayer()
+                                material: {
+                                    color: [255, 0, 0, 0.5]
+                                },
+                                size: 3
+                            }]
+                        }
+                    });
+
+                    satelliteTracks.add(track);
+                }
+            });
+
+            // Create layer for satellite positions
+            const satelliteLayer = new GraphicsLayer();
+            const satelliteTracks = new GraphicsLayer();
+            map.add(satelliteLayer);
+            map.add(satelliteTracks);
+
+            // Parse the satellite TLE data
+            const data = `IRIDIUM 33              
+1 24946U 97051C   22118.47264905  .00000354  00000+0  12037-3 0  9995
+2 24946  86.3853 263.1530 0007008 201.0641 159.0266 14.33811489288525
+IRIDIUM 33 DEB          
+1 33773U 97051L   22118.46515805  .00001292  00000+0  41366-3 0  9999
+2 33773  86.4006 259.0791 0011256 188.2545 171.8470 14.38848226692809
+IRIDIUM 33 DEB          
+1 33775U 97051N   22118.60476926  .00000806  00000+0  27255-3 0  9998
+2 33775  86.3673 251.2525 0013955 190.3787 181.5466 14.35647389691096
+IRIDIUM 33 DEB          
+1 33776U 97051P   22118.45824987  .00000993  00000+0  34552-3 0  9991
+2 33776  86.4014 274.5986 0013799 205.5720 208.3401 14.34429607690768
+IRIDIUM 33 DEB          
+1 33777U 97051Q   22118.41856338  .00003119  00000+0  92750-3 0  9990
+2 33777  86.3851 243.4581 0011007   5.2880 354.8435 14.42893983693695
+IRIDIUM 33 DEB          
+1 33849U 97051S   22118.43485853  .00032802  00000+0  66823-2 0  9994
+2 33849  86.0901 106.9987 0073801 253.0340 106.2771 14.59119427690944
+IRIDIUM 33 DEB          
+1 33850U 97051T   22118.58295711  .00001469  00000+0  49517-3 0  9991
+2 33850  86.3470 236.0171 0012126 187.0870 183.7545 14.36379352691127
+IRIDIUM 33 DEB          
+1 33853U 97051W   22118.43913425  .00001455  00000+0  91910-3 0  9996
+2 33853  86.0069 205.8137 0229938 310.3295 169.2351 13.91440759668870
+IRIDIUM 33 DEB          
+1 33854U 97051X   22118.69115150  .00019091  00000+0  30804-2 0  9993
+2 33854  86.2200  97.4012 0005361 248.2040 286.9758 14.71319007701513
+IRIDIUM 33 DEB          
+1 33859U 97051AC  22118.32928822  .00008786  00000+0  25189-2 0  9995
+2 33859  86.3428 233.1964 0053293 176.7611 183.3946 14.44028858691486
+IRIDIUM 33 DEB          
+1 33860U 97051AD  22118.34015571  .00003789  00000+0  10502-2 0  9998
+2 33860  86.3937 240.3542 0016590 108.8547 304.4881 14.46306390694724
+IRIDIUM 33 DEB          
+1 33862U 97051AF  22118.45955455  .00002270  00000+0  59360-3 0  9996
+2 33862  86.4142 248.5204 0062580 224.0371 207.5656 14.47827464695518
+IRIDIUM 33 DEB          
+1 33864U 97051AH  22118.38677368  .00005196  00000+0  12466-2 0  9999
+2 33864  86.2787 166.5036 0009700  50.6576 322.3112 14.53277863695972
+IRIDIUM 33 DEB          
+1 33865U 97051AJ  22118.47244296  .00031612  00000+0  46573-2 0  9998
+2 33865  86.3481 179.9875 0038571 151.7314 271.4660 14.74704168699911
+IRIDIUM 33 DEB          
+1 33866U 97051AK  22118.51680142  .00001042  00000+0  48662-3 0  9994
+2 33866  86.3016 287.5600 0130935  53.5180   5.9960 14.15016102680243
+IRIDIUM 33 DEB          
+1 33867U 97051AL  22118.32252814  .00004144  00000+0  88156-3 0  9993
+2 33867  86.4223 224.3244 0021967 322.4209  37.5464 14.58688816699279
+IRIDIUM 33 DEB          
+1 33869U 97051AN  22118.43424593  .00020486  00000+0  52848-2 0  9997
+2 33869  86.3503 260.5652 0070230 264.1650  95.1545 14.48432452689647
+IRIDIUM 33 DEB          
+1 33870U 97051AP  22118.47242545  .00002481  00000+0  84099-3 0  9997
+2 33870  86.3774 260.0990 0022598 220.0405 209.7881 14.36254107690769
+IRIDIUM 33 DEB          
+1 33873U 97051AS  22118.20042898  .00013747  00000+0  27503-2 0  9993
+2 33873  86.3732 201.8174 0014922 310.6770  49.3144 14.61685555698059
+IRIDIUM 33 DEB          
+1 33874U 97051AT  22118.57005284  .00006803  00000+0  22822-2 0  9996
+2 33874  86.2911 235.5854 0064705  60.7120 312.6380 14.35951044687105
+IRIDIUM 33 DEB          
+1 33875U 97051AU  22118.27127775  .00016450  00000+0  24072-2 0  9992
+2 33875  86.4122 186.5485 0029543  56.5680  12.8220 14.75267322704051
+IRIDIUM 33 DEB          
+1 33876U 97051AV  22118.76773025  .00284038  00000+0  13365-1 0  9993
+2 33876  86.1810  56.1514 0013575  99.8010 260.4766 15.18190930705272
+IRIDIUM 33 DEB          
+1 33878U 97051AX  22118.32968229  .00027921  00000+0  67828-2 0  9999
+2 33878  86.3078 237.2730 0105030 266.7720  92.1464 14.49393032689058
+IRIDIUM 33 DEB          
+1 33879U 97051AY  22118.40433130  .00015758  00000+0  18872-2 0  9997
+2 33879  86.3609 165.2700 0036727 336.1507  23.8012 14.83530001451567
+IRIDIUM 33 DEB          
+1 33881U 97051BA  22118.51903160  .00001812  00000+0  69928-3 0  9992
+2 33881  86.3855 306.0514 0086174 184.4344 229.6376 14.27701267684553
+IRIDIUM 33 DEB          
+1 33884U 97051BD  22118.56821846  .00004188  00000+0  11025-2 0  9993
+2 33884  86.3833 229.8344 0017013 148.6055 224.4625 14.48786804695322
+IRIDIUM 33 DEB          
+1 33886U 97051BF  22118.48709639  .00000599  00000+0  20894-3 0  9998
+2 33886  86.3819 263.0371 0012546 245.8440 184.8889 14.33647400690656
+IRIDIUM 33 DEB          
+1 33887U 97051BG  22118.54503681  .00000424  00000+0  14152-3 0  9992
+2 33887  86.3113 212.6061 0004621 238.4573 181.9211 14.35250608691605
+IRIDIUM 33 DEB          
+1 33888U 97051BH  22118.55605854  .00012634  00000+0  34938-2 0  9998
+2 33888  86.3307 228.0524 0043168 176.8416 183.3067 14.46060905691028
+IRIDIUM 33 DEB          
+1 33950U 97051BK  22118.27785061  .00037939  00000+0  60814-2 0  9993
+2 33950  86.3794 207.8181 0020798 151.3261 208.9104 14.71378644698632
+IRIDIUM 33 DEB          
+1 33952U 97051BM  22118.49131086  .00013097  00000+0  26448-2 0  9995
+2 33952  86.3566 197.0971 0010051 270.8629  89.1430 14.61300873697799
+IRIDIUM 33 DEB          
+1 33953U 97051BN  22118.41749792  .00003503  00000+0  10988-2 0  9990
+2 33953  86.3909 259.1924 0024252 178.8501 235.4802 14.40175730691627
+IRIDIUM 33 DEB          
+1 33954U 97051BP  22118.74231348  .00039272  00000+0  66592-2 0  9994
+2 33954  86.3754 218.4005 0016562 168.0922 311.5418 14.68954460697289
+IRIDIUM 33 DEB          
+1 33955U 97051BQ  22118.74074224  .00073867  00000+0  80885-2 0  9992
+2 33955  86.3508 198.6070 0024100 133.6583 226.6646 14.87205909698723
+IRIDIUM 33 DEB          
+1 33956U 97051BR  22118.67521293  .00075366  00000+0  63865-2 0  9993
+2 33956  86.4049 210.5594 0020013 250.0170 229.9398 14.97465762701557
+IRIDIUM 33 DEB          
+1 33959U 97051BU  22118.47402172  .00008304  00000+0  26612-2 0  9995
+2 33959  86.3656 271.7463 0076596  21.6888 338.7524 14.37746153687342
+IRIDIUM 33 DEB          
+1 33960U 97051BV  22118.59027154  .00005326  00000+0  13937-2 0  9990
+2 33960  86.2755 168.8751 0004501 225.9646 265.9297 14.49206247695241
+IRIDIUM 33 DEB          
+1 33961U 97051BW  22118.51441700  .00029801  00000+0  43675-2 0  9996
+2 33961  86.2662 137.5058 0022484 173.6119 186.5391 14.75278211699736
+IRIDIUM 33 DEB          
+1 33962U 97051BX  22118.18959431  .00034975  00000+0  56083-2 0  9990
+2 33962  86.3553 187.6897 0034670 190.8870 169.1600 14.71119762699280
+IRIDIUM 33 DEB          
+1 33965U 97051CA  22118.57371281  .00007032  00000+0  16205-2 0  9993
+2 33965  86.3716 217.9400 0006776 328.7592  31.3212 14.55214459696063
+IRIDIUM 33 DEB          
+1 33966U 97051CB  22118.67632154  .00001787  00000+0  54386-3 0  9998
+2 33966  86.3959 249.4220 0005852 284.2162 139.8799 14.41560872693481
+IRIDIUM 33 DEB          
+1 33967U 97051CC  22118.55220190  .00042255  00000+0  62800-2 0  9993
+2 33967  86.3831 202.6522 0032395 156.7776 203.4914 14.74422651699440
+IRIDIUM 33 DEB          
+1 34071U 97051CE  22118.56860164  .00001925  00000+0  59918-3 0  9998
+2 34071  86.3532 227.9524 0008907 162.0912 198.0603 14.40490447692225
+IRIDIUM 33 DEB          
+1 34076U 97051CK  22118.75089353  .00079082  00000+0  59848-2 0  9997
+2 34076  86.3212 115.9401 0026143 206.4849 326.7404 15.01679340707112
+IRIDIUM 33 DEB          
+1 34077U 97051CL  22118.48857428  .00004720  00000+0  14390-2 0  9994
+2 34077  86.3945 260.4695 0018824 132.3887 298.9977 14.41708856691354
+IRIDIUM 33 DEB          
+1 34079U 97051CN  22118.78016301  .00004604  00000+0  11608-2 0  9996
+2 34079  86.3924 229.8817 0012684 155.9187 329.8337 14.50895774696322
+IRIDIUM 33 DEB          
+1 34082U 97051CR  22118.46280145  .00033798  00000+0  63760-2 0  9996
+2 34082  86.3576 274.7864 0115237   5.6768 354.5716 14.60097468688438
+IRIDIUM 33 DEB          
+1 34086U 97051CV  22118.41072333  .00008823  00000+0  24183-2 0  9990
+2 34086  86.3821 254.3759 0021996 153.2699 266.8118 14.46892488692180
+IRIDIUM 33 DEB          
+1 34088U 97051CX  22118.39510264  .00006927  00000+0  18800-2 0  9991
+2 34088  86.4016 249.7137 0013566  81.4964 340.4270 14.47441387693928
+IRIDIUM 33 DEB          
+1 34090U 97051CZ  22118.62934522  .00114181  00000+0  63216-2 0  9990
+2 34090  86.4122 163.2158 0011798 183.8919 176.2230 15.13264159708184
+IRIDIUM 33 DEB          
+1 34091U 97051DA  22118.48806223  .00006944  00000+0  24229-2 0  9999
+2 34091  86.3654 279.7544 0073985  71.0352 289.8843 14.33642976686860
+IRIDIUM 33 DEB          
+1 34095U 97051DE  22118.57773898  .00034391  00000+0  60143-2 0  9996
+2 34095  86.3842 224.9643 0050943 283.8668  75.6881 14.66851428695961
+IRIDIUM 33 DEB          
+1 34097U 97051DG  22118.31964923  .00002432  00000+0  10605-2 0  9990
+2 34097  86.2118 217.6464 0096259 298.9449  60.2112 14.21146536682345
+IRIDIUM 33 DEB          
+1 34098U 97051DH  22118.50511391  .00058483  00000+0  57715-2 0  9999
+2 34098  86.1312  24.6554 0015181  10.0915 164.6550 14.91614456703913
+IRIDIUM 33 DEB          
+1 34099U 97051DJ  22118.51352030  .00024427  00000+0  42182-2 0  9997
+2 34099  86.3671 202.3472 0017401 162.7934 257.3611 14.68220403698078
+IRIDIUM 33 DEB          
+1 34101U 97051DL  22118.49848574  .00021344  00000+0  57949-2 0  9993
+2 34101  86.3675 290.5864 0097051  87.7141 273.5169 14.44687374686393
+IRIDIUM 33 DEB          
+1 34102U 97051DM  22118.56429057  .00006718  00000+0  24466-2 0  9999
+2 34102  86.3735 315.4213 0108821 271.0551 142.8058 14.29785696682577
+IRIDIUM 33 DEB          
+1 34103U 97051DN  22118.47236999  .00018522  00000+0  36560-2 0  9995
+2 34103  86.3515 203.2624 0031359 166.5829 206.8928 14.62036570696480
+IRIDIUM 33 DEB          
+1 34104U 97051DP  22118.54939409  .00012083  00000+0  16826-2 0  9999
+2 34104  86.3428 159.6185 0032628 218.0830 262.9170 14.77319223702121
+IRIDIUM 33 DEB          
+1 34106U 97051DR  22118.51705657  .00007498  00000+0  17511-2 0  9990
+2 34106  86.3681 209.8627 0019681 126.9442 245.3974 14.54488289696542
+IRIDIUM 33 DEB          
+1 34107U 97051DS  22118.57880966  .00006656  00000+0  14712-2 0  9999
+2 34107  86.3878 218.2030 0007383 153.6323 269.2250 14.57140906697068
+IRIDIUM 33 DEB          
+1 34143U 97051DW  22118.52838638  .00019441  00000+0  33565-2 0  9996
+2 34143  86.3921 212.4065 0007281 155.3577 217.5418 14.68332326698118
+IRIDIUM 33 DEB          
+1 34145U 97051DY  22118.38749029  .00002596  00000+0  97880-3 0  9991
+2 34145  86.2242 194.6333 0066502  89.2262 271.6550 14.29837320686454
+IRIDIUM 33 DEB          
+1 34146U 97051DZ  22118.54341712  .00001933  00000+0  63750-3 0  9990
+2 34146  86.2943 207.5686 0033829 266.7521 154.6543 14.37330598690220
+`;
+
+
+            const lines = data.split("\n");
+            const count = (lines.length / 3).toFixed(0);
+            const satellites = [];
+
+            for (let i = 0; i < count; i += 3) {
+                let name = lines[i];
+                let line1 = lines[i + 1];
+                let line2 = lines[i + 2];
+
+                satellites.push({
+                    "name": name,
+                    "line1": line1,
+                    "line2": line2
+                });
+                console.log("added");
+
+                let designator = line1.substring(9, 16);
+                let launchYear = designator.substring(0, 2);
+                const fullLaunchYear =
+                    Number(launchYear) >= 57 ? `
+                    19 $ {
+                        launchYear
+                    }
+                    ` : `
+                    20 $ {
+                        launchYear
+                    }
+                    `;
+                let launchNum = Number(designator.substring(2, 5)).toString();
+                let noradId = Number(line1.substring(3, 7));
+
+                let time = Date.now();
+                let satelliteLoc = null;
+
+                try {
+                    satelliteLoc = getSatelliteLocation(new Date(time), line1, line2);
+                } catch (error) {}
+
+                if (name.includes("DEB")) {
+                    if (satelliteLoc !== null) {
+                        let prediction = Math.round((machineLearningRandomActivation() * 2) * 1000) / 10000;
+                        let template = {
+                            // autocasts as new PopupTemplate()
+                            title: name,
+                            content: "<h4>NORAD ID: {id}<h4/>" + "<h4>Collision Prediction: <b>{pred}%<b/><h4/>",
+                            actions: [{
+                                // Create a popup action to display the satellite track.
+                                title: "Show 3 Hour Orbit",
+                                id: "track",
+                                className: "esri-icon-globe"
+                            }]
+                        };
+
+                        let marker = new Graphic({
+                            geometry: satelliteLoc,
+                            symbol: {
+                                type: "picture-marker", // autocasts as new PictureMarkerSymbol()
+                                url: "https://i.ibb.co/4TqbS6C/kindpng-530446.png",
+                                width: 20,
+                            },
+                            attributes: {
+                                id: noradId,
+                                pred: prediction,
+                                number: launchNum,
+                                time: time,
+                                line1: line1,
+                                line2: line2
+                            },
+                            popupTemplate: template
+                        });
+
+                        satelliteLayer.add(marker);
+                    }
+                } else {
+                    if (satelliteLoc !== null) {
+
+                        let marker = new Graphic({
+                            geometry: satelliteLoc,
+                            symbol: {
+                                type: "point-3d",
+                                symbolLayers: [{
+                                    type: "icon",
+                                    size: 4,
+                                    resource: {
+                                        primitive: "circle"
+                                    },
+                                    material: {
+                                        color: "lightgray"
+                                    }
+                                }]
+                            },
+                            attributes: {
+                                id: noradId,
+                                number: launchNum,
+                                time: time,
+                                line1: line1,
+                                line2: line2
+                            },
+                        });
+
+                        satelliteLayer.add(marker);
+                    }
+                }
+
+            }
+            //console.log(satelliteLayer.graphics.items);
+
+            (function myLoop(i) {
+                setTimeout(function() {
+                    for (let i = 0; i < count; i++) {
+                        try {
+                            let line1 = satellites[i]["line1"];
+                            let line2 = satellites[i]["line2"];
+                            let time = Date.now();
+                            let satelliteLoc = null;
+                            satelliteLoc = getSatelliteLocation(new Date(time), line1, line2);
+                            satelliteLayer.graphics.items[i].geometry = satelliteLoc;
+                        } catch (error) {}
+                    }
+                    if (--i) myLoop(i);
+                }, 1000)
+            })(60 * 60);
+
+        });
+    </script>
+</body>
+
+</html>
