@@ -1,7 +1,7 @@
 # Space Sustainability Project
 
 ## Overview
-The Space Sustainability Project is a web-based platform designed to promote responsible orbital management by providing advanced satellite tracking and collision prevention tools. Powered by Lynx, this application leverages cutting-edge technologies to monitor satellite trajectories, predict potential collisions, and contribute to a debris-free space environment for future generations.
+The Space Sustainability Project is a web-based platform designed to promote responsible orbital management by providing advanced satellite tracking and collision prevention tools. This application leverages cutting-edge technologies to monitor satellite trajectories, predict potential collisions, and contribute to a debris-free space environment for future generations.
 
 ## Features
 - **Real-Time Tracking**: Monitor satellite positions with millisecond precision using TLE (Two-Line Element) data.
@@ -58,7 +58,6 @@ space-sustainability/
    - Explore real-time orbit tracking and collision hotspot visualizations.
 3. **Feedback**:
    - Submit feedback via the Contact Us form on the landing page.
-   - Reach out to the team lead, K. Adharsh, at `adarshkokkula@gmail.com` or `+91 901 492 4034`.
 
 ## Contributing
 We welcome contributions to enhance the Space Sustainability Project! To contribute:
@@ -70,9 +69,3 @@ We welcome contributions to enhance the Space Sustainability Project! To contrib
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contact
-For inquiries or support, contact:
-- **Team Lead**: K. Adharsh
-- **Email**: [adarshkokkula@gmail.com](mailto:adarshkokkula@gmail.com)
-- **Phone**: [+91 901 492 4034](tel:+919014924034)
